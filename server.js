@@ -4,9 +4,13 @@ const cors = require("cors");
 const app = express();
 const path = require("path");
 
+// Update CORS to accept requests from both development and production
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin:
+      process.env.NODE_ENV === "production"
+        ? ["https://content-share-web.vercel.app/", "http://localhost:5173"]
+        : "http://localhost:5173",
     credentials: true,
   })
 );
@@ -21,13 +25,14 @@ const viewRouter = require("./routes/view");
 app.use("/", uploadRouter);
 app.use("/", viewRouter);
 
+// Connect to MongoDB
 mongoDB()
   .then(() => {
     console.log("MongoDB Connected...");
-    app.listen(3000, () => {
-      console.log("Server started on port 3000");
-    });
   })
   .catch((err) => {
     console.error("couldn't connect: ", err.message);
   });
+
+// Export the Express API
+module.exports = app;
