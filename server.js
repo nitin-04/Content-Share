@@ -7,10 +7,8 @@ const path = require("path");
 // Update CORS to accept requests from both development and production
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? ["https://content-share-web.vercel.app/", "http://localhost:5173"]
-        : "http://localhost:5173",
+    origin: "https://content-share-web.vercel.app",
+    // origin: "http://localhost:5173",
     credentials: true,
   })
 );
@@ -33,6 +31,12 @@ mongoDB()
   .catch((err) => {
     console.error("couldn't connect: ", err.message);
   });
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
 // Export the Express API
 module.exports = app;
